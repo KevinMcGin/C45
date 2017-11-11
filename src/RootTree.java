@@ -1,15 +1,15 @@
 
 public class RootTree implements Tree 
 {
-	private String owl;
+	private String classify;
 	
-	public RootTree(String newOwl)
+	public RootTree(String newClassify)
 	{
-		this.owl = newOwl;
+		this.classify = newClassify;
 	}
 	
-	String getOwl()
+	String getClassify()
 	{
-		return owl;
+		return classify;
 	}
 }

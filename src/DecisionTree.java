@@ -14,7 +14,7 @@ public class DecisionTree implements Tree
 		this.indexAtrribute = newIndexAtrribute;
 	}
 	
-	public Tree decideNext(Attributes input)
+	public String classify(Attributes input)
 	{
 		if(children.size() == 0)
 		{
@@ -24,27 +24,43 @@ public class DecisionTree implements Tree
 		if(children.size() == 1)
 		{
 			System.out.println("Decision Tree only one child");
-			return children.get(0);
+			return ((RootTree)children.get(0)).getClassify();
 		}
 		float attributeValue = input.getValues().get(indexAtrribute);
+		Tree nextTree = null;
 		for(int i = 0; i < thresholds.size();i++)
 		{
 			if(i == 0)
 			{
 				if(attributeValue <= thresholds.get(0))
-					return children.get(0);
+				{
+					nextTree = children.get(0);
+					break;
+				}
 			}
 			if(thresholds.size() - 1 != i)
 			{
 				if(attributeValue > thresholds.get(i) && attributeValue <= thresholds.get(i+1))
-					return children.get(i+1);
+				{
+					nextTree = children.get(i+1);
+					break; 
+				}
 			}
 			else
 			{
 				if(attributeValue > thresholds.get(i))
-					return children.get(i+1);
+				{
+					nextTree = children.get(i+1);
+					break;
+				}
 			}
 		}
-		return null;
+		if(nextTree != null)
+			if(!(nextTree instanceof DecisionTree))
+				return ((DecisionTree)nextTree).classify(input);
+			else
+				return ((RootTree)nextTree).getClassify();
+		else
+			return null;
 	}
 }
