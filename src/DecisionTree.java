@@ -7,6 +7,13 @@ public class DecisionTree implements Tree
 	private int indexAtrribute;
 	
 	
+	public DecisionTree(int newIndexAttribute)
+	{
+		this.children = new ArrayList<Tree>();
+		this.thresholds = new ArrayList<Float>();
+		this.indexAtrribute = newIndexAttribute;
+	}
+	
 	public DecisionTree(ArrayList<Tree> newChildren, ArrayList<Float> newThresholds,int newIndexAtrribute)
 	{
 		this.children = newChildren;

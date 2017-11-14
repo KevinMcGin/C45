@@ -35,7 +35,6 @@ public class Main
 				}
 			}
 		}
-		
 		//close reader
 		reader.close();
         
