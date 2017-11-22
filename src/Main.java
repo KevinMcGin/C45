@@ -41,9 +41,17 @@ public class Main
 		//Split dataset 1/3, 2/3 randomly
 		DataSet train = new DataSet();
 		DataSet test = new DataSet();
-		dataSet.splitData(train, test);
+		dataSet.splitDataRandomly(train, test);
 		//Run C45 algorithm on 2/3 dataset
+		Tree root = C45.C45Algorithm(train);
 		//Run test on 1/3 dataset and output to txt file
+		if(root instanceof DecisionTree)
+		{
+			for(Attributes attributes : test.getDataEntries())
+			{
+				((DecisionTree) root).classify(attributes); //Implement confusion matrix
+			}
+		}
 		//Repeat 10 times
 	}
 }

@@ -8,7 +8,7 @@ public class RootTree implements Tree
 		this.classify = newClassify;
 	}
 	
-	String getClassify()
+	String classify()
 	{
 		return classify;
 	}

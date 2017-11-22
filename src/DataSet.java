@@ -8,6 +8,10 @@ public class DataSet
 	{
 		dataEntries = new ArrayList<Attributes>();
 	}
+	public DataSet(DataSet data)
+	{
+		dataEntries = new ArrayList<Attributes>(data.getDataEntries());
+	}
 	
 	public DataSet(ArrayList<Attributes> newDataEntries)
 	{
@@ -19,12 +23,17 @@ public class DataSet
 		dataEntries.add(attribute);
 	}
 	
+	public void removeEntry(int index)
+	{
+		dataEntries.remove(index);
+	}
+	
 	public ArrayList<Attributes> getDataEntries()
 	{
 		return dataEntries;
 	}
 	
-	public void splitData(DataSet train,DataSet test)
+	public void splitDataRandomly(DataSet train,DataSet test)
 	{		
 		ArrayList<Integer> trainIndices = new ArrayList<Integer>();
 		ArrayList<Integer> testIndices = new ArrayList<Integer>();
@@ -49,5 +58,30 @@ public class DataSet
 		{
 			test.addEntry(dataEntries.get(index));
 		}
+	}
+
+	//Inclusive start, exclusive end
+	public DataSet splitDataRemoveAttribute(int start, int end,int attributeRemove)
+	{
+		DataSet data = new DataSet();
+		for(int i=start;i < end;i++)
+		{
+			data.addEntry(dataEntries.get(i));
+		}
+		for(Attributes attributes : data.getDataEntries())
+		{
+			attributes.getValues().remove(attributeRemove);
+		}
+		return data;
+	}
+
+	public DataSet splitData(int start, int end)
+	{
+		DataSet data = new DataSet();
+		for(int i=start;i < end;i++)
+		{
+			data.addEntry(dataEntries.get(i));
+		}
+		return data;
 	}
 }

@@ -31,7 +31,7 @@ public class DecisionTree implements Tree
 		if(children.size() == 1)
 		{
 			System.out.println("Decision Tree only one child");
-			return ((RootTree)children.get(0)).getClassify();
+			return ((RootTree)children.get(0)).classify();
 		}
 		float attributeValue = input.getValues().get(indexAtrribute);
 		Tree nextTree = null;
@@ -66,7 +66,7 @@ public class DecisionTree implements Tree
 			if(!(nextTree instanceof DecisionTree))
 				return ((DecisionTree)nextTree).classify(input);
 			else
-				return ((RootTree)nextTree).getClassify();
+				return ((RootTree)nextTree).classify();
 		else
 			return null;
 	}
