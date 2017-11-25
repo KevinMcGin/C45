@@ -1,7 +1,10 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 
@@ -38,20 +41,53 @@ public class Main
 		//close reader
 		reader.close();
         
-		//Split dataset 1/3, 2/3 randomly
-		DataSet train = new DataSet();
-		DataSet test = new DataSet();
-		dataSet.splitDataRandomly(train, test);
-		//Run C45 algorithm on 2/3 dataset
-		Tree root = C45.C45Algorithm(train);
-		//Run test on 1/3 dataset and output to txt file
-		if(root instanceof DecisionTree)
+		//Init Result Object
+		HashSet<String> titles = new HashSet<String>();
+		for(Attributes attributes : dataSet.getDataEntries())
 		{
-			for(Attributes attributes : test.getDataEntries())
+			titles.add(attributes.getClassified());
+		}
+		Result result = new Result(new ArrayList<String>(titles));
+		for(int i = 0; i < 10; i++)
+		{
+			//Split dataset 1/3, 2/3 randomly
+			DataSet train = new DataSet();
+			DataSet test = new DataSet();
+			dataSet.splitDataRandomly(train, test);
+			//Run C45 algorithm on 2/3 dataset
+			Tree root = C45.C45Algorithm(train);
+			//Run test on 1/3 dataset and output to txt file
+			if(root instanceof DecisionTree)
 			{
-				((DecisionTree) root).classify(attributes); //Implement confusion matrix
+				for(Attributes attributes : test.getDataEntries())
+				{
+					String classified = ((DecisionTree) root).classify(attributes);
+					String actual = attributes.getClassified();
+					result.addResult(classified, actual);
+				}
 			}
 		}
-		//Repeat 10 times
+		//Output results
+		BufferedWriter writer = null;
+		try
+		{
+		    writer = new BufferedWriter( new FileWriter( "results.txt"));
+		    writer.write( result.toString());
+
+		}
+		catch ( IOException e)
+		{
+		}
+		finally
+		{
+		    try
+		    {
+		        if ( writer != null)
+		        	writer.close( );
+		    }
+		    catch ( IOException e)
+		    {
+		    }
+		}
 	}
 }
