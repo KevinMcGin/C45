@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,6 +8,54 @@ public final class C45
 {	
 	public static Tree C45Algorithm(DataSet data)
 	{
+		//If examples is empty return default class
+		if(data.getDataEntries().size() == 0)
+		{
+			return new RootTree("No Info");
+		}
+		//If all examples classified same, return that classification
+		String firstClass = data.getDataEntries().get(0).getClassified();
+		boolean classifiedSame = true;
+		for(Attributes attributes : data.getDataEntries())
+		{
+			if(attributes.getClassified() != firstClass)
+			{
+				classifiedSame = false;
+				break;
+			}
+		}
+		if(classifiedSame)
+		{
+			return new RootTree(firstClass);
+		}
+
+		//If attributes are empty return majority class
+		if(data.getDataEntries().get(0).getValues().size() == 0)
+		{
+			Map<String,Integer> classCount = new HashMap<String,Integer>();
+			for(Attributes attributes : data.getDataEntries())
+			{
+				if(classCount.containsValue(attributes.getClassified()))
+				{
+					classCount.put(attributes.getClassified(), 
+							classCount.get(attributes.getClassified())+1);
+				}
+				else
+				{
+					classCount.put(attributes.getClassified(),1);
+				}
+			}
+			String maxClass = firstClass;
+			for (Map.Entry<String,Integer> classified : classCount.entrySet())
+			{
+				if(classified.getValue() > classCount.get(maxClass))
+				{
+					maxClass = classified.getKey();
+				}
+			}
+			return new RootTree(maxClass);
+		}
+		
 		//Find attribute with highest information gain
 		ArrayList<Float> infoGains = new ArrayList<Float>();
 		int attributeCount = data.getDataEntries().get(0).getValues().size();
@@ -39,6 +88,7 @@ public final class C45
 			tempData.removeEntry(minIndex);
 		}
 		ArrayList<Float> thresholds = thresholdAttributes(orderedData,bestAttributeIndex);
+		Collections.sort(thresholds);
 		
 		//Add children to Root calling C45Algorithm with entries with best attribute value thresholded and all attributes - best
 		ArrayList<Tree> children = new ArrayList<Tree>();
