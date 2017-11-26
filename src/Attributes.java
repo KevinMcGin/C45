@@ -10,7 +10,11 @@ public class Attributes
 		this.values = newValues;
 		this.classified = newClassified;
 	}
-	
+	public Attributes(Attributes attributes)
+	{
+		this.values = new ArrayList<Float>(attributes.getValues());
+		this.classified = attributes.getClassified();
+	}	
 	public ArrayList<Float> getValues()
 	{
 		return values;

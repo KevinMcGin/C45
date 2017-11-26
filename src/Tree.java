@@ -1,5 +1,5 @@
 
 public interface Tree 
 {
-	//if (tree instanceof RootTree) {}
+	public String classify(Attributes input);
 }

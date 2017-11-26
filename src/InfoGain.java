@@ -7,8 +7,12 @@ public final class InfoGain
 {
 	private static float entropy(DataSet data)
 	{
-		Map<String,Integer> classCount = new HashMap<String,Integer>();
 		int classSize = data.getDataEntries().size();
+		if(classSize == 0)
+		{
+			return 1;
+		}
+		Map<String,Integer> classCount = new HashMap<String,Integer>();
 		float entropyValue = 0;
 		for(Attributes thisAttribute : data.getDataEntries())
 		{
@@ -53,7 +57,7 @@ public final class InfoGain
 			{
 				valueCount.put(thisAttribute.getValues().get(indexAttribute),1);
 				
-				subSets.get(thisAttribute.getValues().get(indexAttribute)).addEntry(thisAttribute);
+				subSets.put((thisAttribute.getValues().get(indexAttribute)),new DataSet());
 			}
 		}
 		

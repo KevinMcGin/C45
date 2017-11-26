@@ -1,0 +1,8 @@
+Accurary: 0.10666667
+
+Actual x Classified
+SnowyOwl BarnOwl LongEaredOwl 
+0 0 119 
+7 0 137 
+16 0 48 
+

@@ -51,12 +51,12 @@ public class DataSet
 		}
 		for(Integer index : trainIndices)
 		{
-			train.addEntry(dataEntries.get(index));
+			train.addEntry(new Attributes(dataEntries.get(index)));
 		}
 
 		for(Integer index : testIndices)
 		{
-			test.addEntry(dataEntries.get(index));
+			test.addEntry(new Attributes(dataEntries.get(index)));
 		}
 	}
 

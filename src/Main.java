@@ -12,6 +12,7 @@ public class Main
 {	
 	public static void main(String[] args) throws IOException 
 	{
+		System.out.println("Got this far");
 		//Load attributes and add to a dataset from csv file
 		DataSet dataSet = new DataSet();
 		
@@ -40,7 +41,13 @@ public class Main
 		}
 		//close reader
 		reader.close();
-        
+        for(int i = 0; i < dataSet.getDataEntries().size();i++)
+        {
+        	if(dataSet.getDataEntries().get(i).getValues().size() != 4)
+        	{
+        		dataSet.getDataEntries();
+        	}
+        }
 		//Init Result Object
 		HashSet<String> titles = new HashSet<String>();
 		for(Attributes attributes : dataSet.getDataEntries())
@@ -57,14 +64,11 @@ public class Main
 			//Run C45 algorithm on 2/3 dataset
 			Tree root = C45.C45Algorithm(train);
 			//Run test on 1/3 dataset and output to txt file
-			if(root instanceof DecisionTree)
+			for(Attributes attributes : test.getDataEntries())
 			{
-				for(Attributes attributes : test.getDataEntries())
-				{
-					String classified = ((DecisionTree) root).classify(attributes);
-					String actual = attributes.getClassified();
-					result.addResult(classified, actual);
-				}
+				String classified =  root.classify(attributes);
+				String actual = attributes.getClassified();
+				result.addResult(classified, actual);
 			}
 		}
 		//Output results

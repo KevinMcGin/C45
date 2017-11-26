@@ -7,6 +7,10 @@ public class RootTree implements Tree
 	{
 		this.classify = newClassify;
 	}
+	public String classify(Attributes input)
+	{
+		return classify();
+	}
 	
 	String classify()
 	{

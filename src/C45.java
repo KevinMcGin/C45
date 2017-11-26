@@ -55,7 +55,7 @@ public final class C45
 			}
 			return new RootTree(maxClass);
 		}
-		
+		System.out.println("C45");
 		//Find attribute with highest information gain
 		ArrayList<Float> infoGains = new ArrayList<Float>();
 		int attributeCount = data.getDataEntries().get(0).getValues().size();
@@ -74,9 +74,9 @@ public final class C45
 		//Threshold attributes
 		DataSet tempData = new DataSet(data);
 		DataSet orderedData = new DataSet();
-		int minIndex = 0;
 		while(tempData.getDataEntries().size() > 0)
 		{
+			int minIndex = 0;
 			for(int i = 0; i < tempData.getDataEntries().size();i++)
 			{
 				if(tempData.getDataEntries().get(i).getValues().get(bestAttributeIndex) < tempData.getDataEntries().get(minIndex).getValues().get(bestAttributeIndex))
@@ -105,7 +105,7 @@ public final class C45
 				}
 			}
 			children.add(C45Algorithm(orderedData.splitDataRemoveAttribute(start, end,bestAttributeIndex)));
-			if(i+1 > thresholds.size())
+			if(i+1 >= thresholds.size())
 				children.add(C45Algorithm(orderedData.splitDataRemoveAttribute(end, thresholds.size(),bestAttributeIndex)));
 		}
 		//Create Tree node
@@ -115,27 +115,31 @@ public final class C45
 	
 	private static ArrayList<Float> thresholdAttributes(DataSet data,int attributeIndex)
 	{
-		float minInfoGain = 0.9f;
+		float minInfoGain = 0.1f;
 		
 		DataSet dataOne = new DataSet(data);
 		DataSet dataTwo = new DataSet();
-		float infoGainAvg = -1;
+		float infoGainAvg = -1000;
 		Float threshold = null;
 		int dataIndexThreshold = 0;
 		
+		//Find optimal threshold
 		while(dataOne.getDataEntries().size() > 0)
 		{			
 			float thisInfoGainAvg = (InfoGain.infoGain(dataOne, attributeIndex) + InfoGain.infoGain(dataTwo, attributeIndex)/2);
+			//System.out.println(thisInfoGainAvg);
 			if(thisInfoGainAvg > infoGainAvg)
 			{
 				infoGainAvg = thisInfoGainAvg;
+				threshold = (dataOne.getDataEntries().get(dataOne.getDataEntries().size()-1).getValues().get(attributeIndex) +
+						dataTwo.getDataEntries().get(0).getValues().get(attributeIndex))/2;
 			}
-			threshold = (dataOne.getDataEntries().get(dataOne.getDataEntries().get(attributeIndex).getValues().size()-1).getValues().get(attributeIndex) +
-					dataTwo.getDataEntries().get(0).getValues().get(attributeIndex))/2;
 			
-			dataTwo.getDataEntries().add(dataOne.getDataEntries().get(dataOne.getDataEntries().size()));
-			dataOne.getDataEntries().remove(dataOne.getDataEntries().get(dataOne.getDataEntries().size()));
+			dataTwo.getDataEntries().add(dataOne.getDataEntries().get(dataOne.getDataEntries().size()-1));
+			dataOne.getDataEntries().remove(dataOne.getDataEntries().get(dataOne.getDataEntries().size()-1));
 		}
+		System.out.println(infoGainAvg);
+		//Find rest of optimal thresholds
 		ArrayList<Float> thresholds = new ArrayList<Float>();
 		if(threshold != null)
 			thresholds.add(threshold);
