@@ -42,28 +42,29 @@ public class Result
 					if(classified.equals(titles.get(j)))
 					{
 						confusionMatrix.get(i).set(j, confusionMatrix.get(i).get(j)+1);
+						break;
 					}
 				}
+				break;
 			}
 		}
 	}
 	public String toString()
 	{
 		String string = "Accurary: " + ((float)(correct))/(correct+incorrect) + "\r\n\r\n";
-		string += "Actual x Classified\r\n";
+		string += "Actual * Classified\r\n";
 		for(int i = 0; i < titles.size();i++)
 		{
 			string += titles.get(i) + " ";
 		}
-		string += "\r\n";
 		for(int i = 0; i < confusionMatrix.size();i++)
 		{
+			string += "\r\n";
 			for(int j = 0; j < confusionMatrix.get(i).size();j++)
 			{
 				string += confusionMatrix.get(i).get(j) + " ";
 			}
-			string += "\r\n";
 		}
-		return string + "\r\n";
+		return string;
 	}
 }

@@ -53,7 +53,6 @@ public class DataSet
 		{
 			train.addEntry(new Attributes(dataEntries.get(index)));
 		}
-
 		for(Integer index : testIndices)
 		{
 			test.addEntry(new Attributes(dataEntries.get(index)));
@@ -66,7 +65,7 @@ public class DataSet
 		DataSet data = new DataSet();
 		for(int i=start;i < end;i++)
 		{
-			data.addEntry(dataEntries.get(i));
+			data.addEntry(new Attributes(dataEntries.get(i)));
 		}
 		for(Attributes attributes : data.getDataEntries())
 		{

@@ -6,19 +6,22 @@ import java.util.Map;
 
 public final class C45 
 {	
+	static String defaultClass = "No Info";
+	
 	public static Tree C45Algorithm(DataSet data)
 	{
 		//If examples is empty return default class
 		if(data.getDataEntries().size() == 0)
 		{
-			return new RootTree("No Info");
+			return new RootTree(defaultClass);
 		}
 		//If all examples classified same, return that classification
 		String firstClass = data.getDataEntries().get(0).getClassified();
+		defaultClass = firstClass;
 		boolean classifiedSame = true;
 		for(Attributes attributes : data.getDataEntries())
 		{
-			if(attributes.getClassified() != firstClass)
+			if(!attributes.getClassified().equals(firstClass))
 			{
 				classifiedSame = false;
 				break;
@@ -28,11 +31,35 @@ public final class C45
 		{
 			return new RootTree(firstClass);
 		}
+		//If examples classified majority, return that majority classification
+		float majority = 0.7f;
+		Map<String,Integer> classCount = new HashMap<String,Integer>();
+		for(Attributes attributes : data.getDataEntries())
+		{
+			if(classCount.containsValue(attributes.getClassified()))
+			{
+				classCount.put(attributes.getClassified(), 
+						classCount.get(attributes.getClassified())+1);
+			}
+			else
+			{
+				classCount.put(attributes.getClassified(),1);
+			}
+		}
+		String maxClass = firstClass;
+		for (Map.Entry<String,Integer> classified : classCount.entrySet())
+		{
+			if(classified.getValue() > classCount.get(maxClass))
+			{
+				maxClass = classified.getKey();
+			}
+		}
+		if(majority<= ((float)classCount.get(maxClass))/data.getDataEntries().size())
+			return new RootTree(maxClass);
 
 		//If attributes are empty return majority class
 		if(data.getDataEntries().get(0).getValues().size() == 0)
 		{
-			Map<String,Integer> classCount = new HashMap<String,Integer>();
 			for(Attributes attributes : data.getDataEntries())
 			{
 				if(classCount.containsValue(attributes.getClassified()))
@@ -45,7 +72,6 @@ public final class C45
 					classCount.put(attributes.getClassified(),1);
 				}
 			}
-			String maxClass = firstClass;
 			for (Map.Entry<String,Integer> classified : classCount.entrySet())
 			{
 				if(classified.getValue() > classCount.get(maxClass))
@@ -55,7 +81,6 @@ public final class C45
 			}
 			return new RootTree(maxClass);
 		}
-		System.out.println("C45");
 		//Find attribute with highest information gain
 		ArrayList<Float> infoGains = new ArrayList<Float>();
 		int attributeCount = data.getDataEntries().get(0).getValues().size();
@@ -87,7 +112,7 @@ public final class C45
 			orderedData.addEntry(tempData.getDataEntries().get(minIndex));
 			tempData.removeEntry(minIndex);
 		}
-		ArrayList<Float> thresholds = thresholdAttributes(orderedData,bestAttributeIndex);
+		ArrayList<Float> thresholds = thresholdAttributes(orderedData,bestAttributeIndex,0);
 		Collections.sort(thresholds);
 		
 		//Add children to Root calling C45Algorithm with entries with best attribute value thresholded and all attributes - best
@@ -102,53 +127,56 @@ public final class C45
 				{
 					start = end;
 					end = j;
+					break;
 				}
 			}
 			children.add(C45Algorithm(orderedData.splitDataRemoveAttribute(start, end,bestAttributeIndex)));
 			if(i+1 >= thresholds.size())
-				children.add(C45Algorithm(orderedData.splitDataRemoveAttribute(end, thresholds.size(),bestAttributeIndex)));
+				children.add(C45Algorithm(orderedData.splitDataRemoveAttribute(end, orderedData.getDataEntries().size(),bestAttributeIndex)));
 		}
 		//Create Tree node
 		DecisionTree tree = new DecisionTree(children,thresholds,bestAttributeIndex);
 		return tree;
 	}
 	
-	private static ArrayList<Float> thresholdAttributes(DataSet data,int attributeIndex)
+	private static ArrayList<Float> thresholdAttributes(DataSet data,int attributeIndex,int split)
 	{
-		float minInfoGain = 0.1f;
+		float minInfoGain = 0.35f;
 		
 		DataSet dataOne = new DataSet(data);
 		DataSet dataTwo = new DataSet();
 		float infoGainAvg = -1000;
 		Float threshold = null;
 		int dataIndexThreshold = 0;
+		int index = 0;
 		
 		//Find optimal threshold
 		while(dataOne.getDataEntries().size() > 0)
 		{			
-			float thisInfoGainAvg = (InfoGain.infoGain(dataOne, attributeIndex) + InfoGain.infoGain(dataTwo, attributeIndex)/2);
-			//System.out.println(thisInfoGainAvg);
+			float thisInfoGainAvg = (InfoGain.infoGain(dataOne, attributeIndex) + InfoGain.infoGain(dataTwo, attributeIndex))/2;
 			if(thisInfoGainAvg > infoGainAvg)
 			{
 				infoGainAvg = thisInfoGainAvg;
 				threshold = (dataOne.getDataEntries().get(dataOne.getDataEntries().size()-1).getValues().get(attributeIndex) +
 						dataTwo.getDataEntries().get(0).getValues().get(attributeIndex))/2;
-			}
+				dataIndexThreshold = index;
+			}				
 			
 			dataTwo.getDataEntries().add(dataOne.getDataEntries().get(dataOne.getDataEntries().size()-1));
 			dataOne.getDataEntries().remove(dataOne.getDataEntries().get(dataOne.getDataEntries().size()-1));
+			index++;
 		}
-		System.out.println(infoGainAvg);
 		//Find rest of optimal thresholds
 		ArrayList<Float> thresholds = new ArrayList<Float>();
+
 		if(threshold != null)
 			thresholds.add(threshold);
 		else
 			return thresholds;
 		if(infoGainAvg < minInfoGain)
-		{
-			thresholds.addAll(thresholdAttributes(data.splitData(0, dataIndexThreshold),attributeIndex));
-			thresholds.addAll(thresholdAttributes(data.splitData(dataIndexThreshold,data.getDataEntries().size()),attributeIndex));  
+		{			
+			thresholds.addAll(thresholdAttributes(data.splitData(0, dataIndexThreshold),attributeIndex,split+1));
+			thresholds.addAll(thresholdAttributes(data.splitData(dataIndexThreshold,data.getDataEntries().size()),attributeIndex,split+1));  
 		}
 		
 		return thresholds;

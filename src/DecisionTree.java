@@ -33,7 +33,7 @@ public class DecisionTree implements Tree
 			System.out.println("Decision Tree only one child");
 			return ((RootTree)children.get(0)).classify();
 		}
-		if( indexAtrribute == input.getValues().size())
+		if(indexAtrribute == input.getValues().size())
 		{
 			input.getValues();
 		}
@@ -67,7 +67,10 @@ public class DecisionTree implements Tree
 			}
 		}
 		if(nextTree != null)
+		{
+			input.getValues().remove(indexAtrribute);
 			return nextTree.classify(input);
+		}
 		else
 			return null;
 	}

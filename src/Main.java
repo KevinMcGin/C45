@@ -12,7 +12,6 @@ public class Main
 {	
 	public static void main(String[] args) throws IOException 
 	{
-		System.out.println("Got this far");
 		//Load attributes and add to a dataset from csv file
 		DataSet dataSet = new DataSet();
 		
@@ -41,13 +40,6 @@ public class Main
 		}
 		//close reader
 		reader.close();
-        for(int i = 0; i < dataSet.getDataEntries().size();i++)
-        {
-        	if(dataSet.getDataEntries().get(i).getValues().size() != 4)
-        	{
-        		dataSet.getDataEntries();
-        	}
-        }
 		//Init Result Object
 		HashSet<String> titles = new HashSet<String>();
 		for(Attributes attributes : dataSet.getDataEntries())
@@ -72,10 +64,11 @@ public class Main
 			}
 		}
 		//Output results
+		System.out.println(result.toString());
 		BufferedWriter writer = null;
 		try
 		{
-		    writer = new BufferedWriter( new FileWriter( "results.txt"));
+		    writer = new BufferedWriter( new FileWriter("results.txt"));
 		    writer.write( result.toString());
 
 		}
