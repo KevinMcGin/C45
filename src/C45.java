@@ -141,11 +141,13 @@ public final class C45
 	
 	private static ArrayList<Float> thresholdAttributes(DataSet data,int attributeIndex,int split)
 	{
-		float minInfoGain = 0.35f;
+		float minInfoGain = .4f;
 		
 		DataSet dataOne = new DataSet(data);
 		DataSet dataTwo = new DataSet();
 		float infoGainAvg = -1000;
+		float infoGain1 = -1000;
+		float infoGain2 = -1000;
 		Float threshold = null;
 		int dataIndexThreshold = 0;
 		int index = 0;
@@ -153,13 +155,17 @@ public final class C45
 		//Find optimal threshold
 		while(dataOne.getDataEntries().size() > 0)
 		{			
-			float thisInfoGainAvg = (InfoGain.infoGain(dataOne, attributeIndex) + InfoGain.infoGain(dataTwo, attributeIndex))/2;
+			float thisInfoGain1 = InfoGain.infoGain(dataOne, attributeIndex);
+			float thisInfoGain2 = InfoGain.infoGain(dataTwo, attributeIndex);
+			float thisInfoGainAvg = (thisInfoGain1 + thisInfoGain2)/2;
 			if(thisInfoGainAvg > infoGainAvg)
 			{
 				infoGainAvg = thisInfoGainAvg;
 				threshold = (dataOne.getDataEntries().get(dataOne.getDataEntries().size()-1).getValues().get(attributeIndex) +
 						dataTwo.getDataEntries().get(0).getValues().get(attributeIndex))/2;
 				dataIndexThreshold = index;
+				infoGain1 = thisInfoGain1;
+				infoGain2 = thisInfoGain2;
 			}				
 			
 			dataTwo.getDataEntries().add(dataOne.getDataEntries().get(dataOne.getDataEntries().size()-1));
@@ -173,10 +179,13 @@ public final class C45
 			thresholds.add(threshold);
 		else
 			return thresholds;
-		if(infoGainAvg < minInfoGain)
+		if(infoGain1 < minInfoGain)
 		{			
-			thresholds.addAll(thresholdAttributes(data.splitData(0, dataIndexThreshold),attributeIndex,split+1));
-			thresholds.addAll(thresholdAttributes(data.splitData(dataIndexThreshold,data.getDataEntries().size()),attributeIndex,split+1));  
+			thresholds.addAll(thresholdAttributes(data.splitData(0, dataIndexThreshold),attributeIndex,++split));  
+		}
+		if(infoGain2 < minInfoGain)
+		{
+			thresholds.addAll(thresholdAttributes(data.splitData(dataIndexThreshold,data.getDataEntries().size()),attributeIndex,++split));
 		}
 		
 		return thresholds;

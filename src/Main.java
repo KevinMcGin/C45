@@ -47,7 +47,7 @@ public class Main
 			titles.add(attributes.getClassified());
 		}
 		Result result = new Result(new ArrayList<String>(titles));
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < 500; i++)
 		{
 			//Split dataset 1/3, 2/3 randomly
 			DataSet train = new DataSet();
@@ -55,6 +55,7 @@ public class Main
 			dataSet.splitDataRandomly(train, test);
 			//Run C45 algorithm on 2/3 dataset
 			Tree root = C45.C45Algorithm(train);
+			//System.out.println(root.toString());
 			//Run test on 1/3 dataset and output to txt file
 			for(Attributes attributes : test.getDataEntries())
 			{

@@ -16,4 +16,10 @@ public class RootTree implements Tree
 	{
 		return classify;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return classify;
+	}
 }

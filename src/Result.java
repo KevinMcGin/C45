@@ -52,7 +52,7 @@ public class Result
 	public String toString()
 	{
 		String string = "Accurary: " + ((float)(correct))/(correct+incorrect) + "\r\n\r\n";
-		string += "Actual * Classified\r\n";
+		string += "Classified ";
 		for(int i = 0; i < titles.size();i++)
 		{
 			string += titles.get(i) + " ";
@@ -60,6 +60,7 @@ public class Result
 		for(int i = 0; i < confusionMatrix.size();i++)
 		{
 			string += "\r\n";
+			string += "Actual " + titles.get(i) + " ";
 			for(int j = 0; j < confusionMatrix.get(i).size();j++)
 			{
 				string += confusionMatrix.get(i).get(j) + " ";

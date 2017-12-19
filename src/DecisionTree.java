@@ -74,4 +74,12 @@ public class DecisionTree implements Tree
 		else
 			return null;
 	}
+	@Override
+	public String toString()
+	{
+		String s = children.toString();
+		s += "\n\r";
+		s += thresholds.toString();
+		return s;
+	}
 }

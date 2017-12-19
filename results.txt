@@ -1,7 +1,6 @@
-Accurary: 0.92444444
+Accurary: 0.9027111
 
-Actual * Classified
-SnowyOwl BarnOwl LongEaredOwl 
-126 18 7 
-7 141 1 
-0 1 149 
+Classified SnowyOwl BarnOwl LongEaredOwl 
+Actual SnowyOwl 6291 1068 83 
+Actual BarnOwl 774 6721 56 
+Actual LongEaredOwl 75 133 7299 
